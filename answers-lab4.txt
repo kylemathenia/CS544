@@ -1,0 +1,20 @@
+1) 
+I think in entry.S the linker is used to find the execution point, but in mpentry.c the program can just
+use the physical addresses with MPBOOTPHYS. Generally, the link address is the address where execution of 
+a program takes place, while load address is the address in memory where the program is actually placed.
+
+2)
+I think seperate kernel stacks are needed, even though kernel code will never run concurrently, because 
+each different processor and process could need a different kernel state in memory saved. A time when that
+might happen is if a process is interupted, perhaps preemtively, and switches to a different process. The 
+kernel stack needs to be preserved to continue where it left off. 
+
+3)
+Because e is an struct Env, which is in the envs array, which is in kernel code, which shares the exact 
+same address values for all page directories in the cr3 register, I think.
+
+4)
+When switching between environments (processes), the registers must be saved in order to continue execution
+in that environment when the cpu switches back. If the regesters are not saved the computer will be 
+completely lost. The instruction pointer will almost certainly point to the incorrect instruction to 
+continue execution, let alone the rest of the registers. 
